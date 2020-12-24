@@ -26,13 +26,15 @@ func _version(name string, version string) string {
 
 func version(output *logger.Logger) {
 	output.Info(0, _version("Core", VERSION))
-	output.Info(0, _version("Datasource", datasource.VERSION))
-	output.Info(0, _version("Writer", writer.VERSION))
-	output.Info(0, _version("CSV Writer", csv.VERSION))
+	if output.IsDebug() {
+		output.Info(0, _version("Datasource", datasource.VERSION))
+		output.Info(0, _version("Writer", writer.VERSION))
+		output.Info(0, _version("CSV Writer", csv.VERSION))
 
-	output.Info(0, _version("Logger", logger.VERSION))
-	output.Info(0, _version("Error", error.VERSION))
-	output.Info(0, _version("Measure", measure.VERSION))
+		output.Info(0, _version("Logger", logger.VERSION))
+		output.Info(0, _version("Error", error.VERSION))
+		output.Info(0, _version("Measure", measure.VERSION))
+	}
 }
 
 func main() {
