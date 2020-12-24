@@ -1,0 +1,44 @@
+version: 4
+commit:
+  keys:
+    - type: feat
+      value: Introducing new features.
+    - type: perf
+      value: Improving user experience / usability / reliablity.
+    - type: fix
+      value: Fixing a bug.
+    - type: refac
+      value: A code change that neither fixes a bug nor adds a feature.
+    - type: chore
+      value: Other changes that don't modify src or test files.
+  scopes:
+    - type: cli
+      value: Commandline module
+    - type: datasource
+      value: Datasource module
+    - type: writer
+      value: Writer module
+    - type: model
+      value: Model module
+    - type: profile
+      value: Profile module
+    - type: transaction
+      value: Transaction module
+    - type: currency
+      value: Currency module
+    - type: utils
+      value: Utilties module
+    - type: logger
+      value: Logger module
+    - type: error
+      value: Error module
+    - type: measure
+      value: Measure module
+    - type: csv
+      value: CSV module
+    - type: db
+      value: Database files
+    - type: script
+      value: Helper scripts
+    - type: config
+      value: Any kind of configuration files / string
