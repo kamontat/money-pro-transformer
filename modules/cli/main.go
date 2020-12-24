@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -14,7 +15,25 @@ import (
 	writer "moneypro.kamontat.net/writer"
 )
 
+// VERSION is commandline version
+const VERSION = "v1.0.0"
+
 var logcode = 1000
+
+func _version(name string, version string) string {
+	return fmt.Sprintf("%-12s version: %s", name, version)
+}
+
+func version(output *logger.Logger) {
+	output.Info(0, _version("Core", VERSION))
+	output.Info(0, _version("Datasource", datasource.VERSION))
+	output.Info(0, _version("Writer", writer.VERSION))
+	output.Info(0, _version("CSV Writer", csv.VERSION))
+
+	output.Info(0, _version("Logger", logger.VERSION))
+	output.Info(0, _version("Error", error.VERSION))
+	output.Info(0, _version("Measure", measure.VERSION))
+}
 
 func main() {
 	timing := measure.NewTiming()
@@ -61,6 +80,9 @@ func main() {
 		output.SetLevel(logger.SILENT)
 	}
 	timing.Save(stepname)
+
+	// Print version information
+	version(output)
 
 	i := 10
 	for key, duration := range timing.Release() {
