@@ -1,3 +1,3 @@
-module kamontat.net/money-pro-utils
+module moneypro.kamontat.net/utils-common
 
 go 1.15

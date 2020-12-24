@@ -1,110 +1,57 @@
 package models
 
-import (
-	"fmt"
-	"strings"
+import "fmt"
 
-	utils "kamontat.net/money-pro-utils"
-)
-
-// Transaction is object represent data on each line in csv
+// Transaction is modified data loading from csv
 type Transaction struct {
-	datetime         string
-	ttype            TransactionType
-	amount           float64
-	amountCurrency   CurrencyUnit
-	amountTo         float64
-	amountToCurrency CurrencyUnit
-	balance          float64
-	balanceCurrency  CurrencyUnit
-	account          string
-	accountTo        string
-	category         *Category
-	description      string
-	agent            string
-	check            string
-	class            string
-	raw              map[string]string
-}
-
-// GetAccountName will return current transaction account from/use
-func (t *Transaction) GetAccountName() string {
-	return t.account
+	// Index is transaction index
+	Index uint32
+	// Datetime when transaction occurred
+	Datetime string
+	// Type of transaction
+	Type TransactionType
+	// Category of transaction
+	Category *TransactionCategory
+	// Amount is number of money receive/paid by this transaction
+	Amount float64
+	// AmountCurrency is currency of amount money
+	AmountCurrency CurrencyType
+	// AmountTo valid only when transaction type if transfer, amount to new account
+	AmountTo float64
+	// AmountToCurrency is currency of amount to money
+	AmountToCurrency CurrencyType
+	// Balance is current money holded in account after apply amount
+	Balance float64
+	// BalanceCurrency is currency of balance
+	BalanceCurrency CurrencyType
+	// Account is account name
+	Account string
+	// AccountTo is account that money transfer to
+	AccountTo string
+	// Description is optional description
+	Description string
+	// Agent is person this transaction paid for/receive from
+	Agent string
+	// Check is check number
+	Check string
+	// Class is classify of this transaction
+	Class string
+	// Raw is raw data from csv file
+	Raw map[string]string
 }
 
 // String will return formatted string
 func (t *Transaction) String() string {
-	switch t.ttype {
-	case IN, EP:
-		return fmt.Sprintf("%22s %s %.3f %s [%s]", t.datetime, t.category, t.amount, t.amountCurrency, t.ttype)
-	case OB:
-		return fmt.Sprintf("%22s Opening new Account", t.datetime)
-	case BJ:
-		return fmt.Sprintf("%22s Update balance by %.3f %s", t.datetime, t.amount, t.amountCurrency)
-	case MT:
-		return fmt.Sprintf("%22s Move %.3f %s to '%s' (%.3f %s)", t.datetime, t.amount, t.amountCurrency, t.accountTo, t.amountTo, t.amountToCurrency)
+	switch t.Type {
+	case TIN, TEP:
+		return fmt.Sprintf("%22s %s %.3f %s [%s]", t.Datetime, t.Category.FullName, t.Amount, t.AmountCurrency, t.Type.Name)
+	case TOB:
+		return fmt.Sprintf("%22s Opening new Account", t.Datetime)
+	case TBJ:
+		return fmt.Sprintf("%22s Update balance by %.3f %s", t.Datetime, t.Amount, t.AmountCurrency)
+	case TMT:
+		return fmt.Sprintf("%22s Move %.3f %s to '%s' (%.3f %s)", t.Datetime, t.Amount, t.AmountCurrency, t.AccountTo, t.AmountTo, t.AmountToCurrency)
 	default:
-		return fmt.Sprintf("%22s [%s]", t.datetime, t.ttype)
+		return fmt.Sprintf("%22s [%s]", t.Datetime, t.Type.Name)
 	}
-}
-
-// CsvString will return data as csv format
-func (t *Transaction) CsvString() string {
-	output := []string{
-		t.datetime,
-		t.ttype.String(),
-		t.account,
-		utils.FloatToString(t.amount),
-		t.amountCurrency.String(),
-		t.accountTo,
-		utils.FloatToString(t.amountTo),
-		t.amountToCurrency.String(),
-		utils.FloatToString(t.balance),
-		t.balanceCurrency.String(),
-		t.category.base,
-		t.category.sub,
-		t.category.full,
-		t.description,
-		t.agent,
-		t.check,
-		t.class,
-	}
-	return strings.Join(output, ",")
-}
-
-// NewTransaction will create Transaction struct base on input map
-func NewTransaction(mapper map[string]string) (*Transaction, error) {
-	amount, amountCurrency, err := ToCurrency(AMOUNT.Get(mapper))
-	if err != nil {
-		return nil, err
-	}
-
-	amountTo, amountToCurrency, err := ToCurrency(AMOUNTTO.Get(mapper))
-	if err != nil {
-		return nil, err
-	}
-
-	balance, balanceCurrency, err := ToCurrency(BALANCE.Get(mapper))
-	if err != nil {
-		return nil, err
-	}
-
-	return &Transaction{
-		datetime:         DATE.Get(mapper),
-		ttype:            ToTransactionType(TRANSACTIONTYPE.Get(mapper)),
-		account:          ACCOUNT.Get(mapper),
-		accountTo:        ACCOUNTTO.Get(mapper),
-		category:         NewCategory(CATEGORY.Get(mapper)),
-		amount:           amount,
-		amountCurrency:   amountCurrency,
-		amountTo:         amountTo,
-		amountToCurrency: amountToCurrency,
-		balance:          balance,
-		balanceCurrency:  balanceCurrency,
-		description:      DESCRIPTION.Get(mapper),
-		agent:            AGENT.Get(mapper),
-		check:            CHECK.Get(mapper),
-		class:            CLASS.Get(mapper),
-		raw:              mapper,
-	}, nil
 }

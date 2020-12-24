@@ -2,38 +2,42 @@ package datasource
 
 import (
 	"encoding/csv"
-	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
-	models "kamontat.net/money-pro-models"
+	models "moneypro.kamontat.net/models-common"
+	transaction "moneypro.kamontat.net/models-transaction"
+	e "moneypro.kamontat.net/utils-error"
+	logger "moneypro.kamontat.net/utils-logger"
 )
 
+var logcode = 2000
+
 // Loader will load csv and convert to transaction struct
-func Loader(filename string) (*models.Accounts, error) {
+func Loader(output *logger.Logger, filename string) (*models.Application, error) {
 	csvFile, err := os.Open(filename)
 	defer csvFile.Close()
-	if err != nil {
-		fmt.Println(err)
+	if e.When(err).Exist() {
 		return nil, err
 	}
 
 	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
+	if e.When(err).Exist() {
 		return nil, err
 	}
 
 	var nameMapper []string
-	accounts := models.NewAccounts()
+	application := models.NewApplication()
 
+	output.Debug(logcode, "Loading csv size: %d line", len(csvLines)-1)
 	for index, line := range csvLines {
 		if index == 0 {
 			nameMapper = line
 		} else {
 			mapper := make(map[string]string)
 
-			mapper["Index"] = string(index)
+			mapper["Index"] = strconv.Itoa(index)
 			for colIndex, col := range line {
 				keyname := nameMapper[colIndex]
 				value := strings.TrimSpace(col)
@@ -43,14 +47,12 @@ func Loader(filename string) (*models.Accounts, error) {
 				}
 			}
 
-			transaction, err := models.NewTransaction(mapper)
-			if err == nil {
-				accounts.AddTransaction(transaction)
-			} else {
-				fmt.Println(err)
-			}
+			transaction, err := transaction.Builder(mapper)
+			e.When(err).Print(output, logcode).OnCompleted(func() {
+				application.AddTransaction(transaction)
+			})
 		}
 	}
 
-	return accounts, nil
+	return application, nil
 }

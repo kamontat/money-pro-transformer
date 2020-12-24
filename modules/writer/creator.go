@@ -1,6 +1,10 @@
 package writer
 
-import "os"
+import (
+	"os"
+
+	e "moneypro.kamontat.net/utils-error"
+)
 
 // FileCreator is a wrapper of os.File
 type FileCreator struct {
@@ -13,8 +17,22 @@ func (f *FileCreator) AutoClose() {
 }
 
 // Write will write input string to file content
-func (f *FileCreator) Write(msg string) (int, error) {
-	return f.file.WriteString(msg)
+func (f *FileCreator) Write(msg string, newline bool) (int, error) {
+	byteSize, err := f.file.WriteString(msg)
+	if e.When(err).Exist() {
+		return 0, err
+	}
+
+	if newline {
+		size, err := f.WriteNewLine()
+		if e.When(err).Exist() {
+			return 0, err
+		}
+
+		byteSize += size
+	}
+
+	return byteSize, nil
 }
 
 // WriteNewLine add new line to end of file content
