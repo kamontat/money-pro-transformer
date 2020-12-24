@@ -24,6 +24,7 @@ replace moneypro.kamontat.net/writer => ../writer
 
 require (
 	moneypro.kamontat.net/models-common v0.0.0-00010101000000-000000000000
+	moneypro.kamontat.net/models-profile v0.0.0-00010101000000-000000000000
 	moneypro.kamontat.net/models-transaction v0.0.0-00010101000000-000000000000
 	moneypro.kamontat.net/utils-error v0.0.0-00010101000000-000000000000
 	moneypro.kamontat.net/utils-logger v0.0.0-00010101000000-000000000000
