@@ -1,5 +1,9 @@
 # CSV Utilities
 
+## v0.1.1
+
+- Add 3 more columns. 'Auto Amount', 'Expense', and 'Income'
+
 ## v0.1.0
 
 - Initial version
