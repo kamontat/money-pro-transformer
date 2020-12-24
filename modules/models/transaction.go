@@ -40,18 +40,42 @@ type Transaction struct {
 	Raw map[string]string
 }
 
+// AutoAmount is negative amount when type is expense, or normal amount if not
+func (t *Transaction) AutoAmount() float64 {
+	if t.Type == TEP {
+		return t.Amount * -1
+	}
+	return t.Amount
+}
+
+// Expense is amount number when type is expense or zero otherwise
+func (t *Transaction) Expense() float64 {
+	if t.Type == TEP {
+		return t.Amount
+	}
+	return 0
+}
+
+// Income is amount number when type is income or zero otherwise
+func (t *Transaction) Income() float64 {
+	if t.Type == TIN {
+		return t.Amount
+	}
+	return 0
+}
+
 // String will return formatted string
 func (t *Transaction) String() string {
 	switch t.Type {
 	case TIN, TEP:
-		return fmt.Sprintf("%22s %s %.3f %s [%s]", t.Datetime, t.Category.FullName, t.Amount, t.AmountCurrency, t.Type.Name)
+		return fmt.Sprintf("%22s {%d} %s %.3f %s [%s]", t.Datetime, t.Index, t.Category.FullName, t.Amount, t.AmountCurrency, t.Type.Name)
 	case TOB:
-		return fmt.Sprintf("%22s Opening new Account", t.Datetime)
+		return fmt.Sprintf("%22s {%d} Opening new Account", t.Datetime, t.Index)
 	case TBJ:
-		return fmt.Sprintf("%22s Update balance by %.3f %s", t.Datetime, t.Amount, t.AmountCurrency)
+		return fmt.Sprintf("%22s {%d} Update balance by %.3f %s", t.Datetime, t.Index, t.Amount, t.AmountCurrency)
 	case TMT:
-		return fmt.Sprintf("%22s Move %.3f %s to '%s' (%.3f %s)", t.Datetime, t.Amount, t.AmountCurrency, t.AccountTo, t.AmountTo, t.AmountToCurrency)
+		return fmt.Sprintf("%22s {%d} Move %.3f %s to '%s' (%.3f %s)", t.Datetime, t.Index, t.Amount, t.AmountCurrency, t.AccountTo, t.AmountTo, t.AmountToCurrency)
 	default:
-		return fmt.Sprintf("%22s [%s]", t.Datetime, t.Type.Name)
+		return fmt.Sprintf("%22s {%d} [%s] TODO: DIDN'T IMPLEMENT THIS TYPE YET", t.Datetime, t.Index, t.Type.Name)
 	}
 }

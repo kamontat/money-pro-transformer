@@ -8,45 +8,52 @@ type AccountType struct {
 }
 
 var (
-	// SA is Saving Account
-	SA AccountType = AccountType{
+	// AUN is Unknown account type
+	AUN AccountType = AccountType{
+		Code:  uint8(0),
+		Name:  "Unknown",
+		Short: "AUN",
+	}
+
+	// ASA is Saving Account
+	ASA AccountType = AccountType{
 		Code:  uint8(1),
 		Name:  "Saving Account",
-		Short: "SA",
+		Short: "ASA",
 	}
 
-	// CC is Credit Card
-	CC AccountType = AccountType{
+	// ACC is Credit Card
+	ACC AccountType = AccountType{
 		Code:  uint8(2),
 		Name:  "Credit Card",
-		Short: "CC",
+		Short: "ACC",
 	}
 
-	// FD is Fund, one of possible asset in Money Pro
-	FD AccountType = AccountType{
+	// AFD is Fund, one of possible asset in Money Pro
+	AFD AccountType = AccountType{
 		Code:  uint8(3),
 		Name:  "Fund",
-		Short: "FD",
+		Short: "AFD",
 	}
 
-	// SK is Stock, one of possible asset in Money Pro
-	SK AccountType = AccountType{
+	// ASK is Stock, one of possible asset in Money Pro
+	ASK AccountType = AccountType{
 		Code:  uint8(4),
 		Name:  "Stock",
-		Short: "SK",
+		Short: "ASK",
 	}
 
-	// OW is Online wallet, another extra wallet
-	OW AccountType = AccountType{
+	// AOW is Online wallet, another extra wallet
+	AOW AccountType = AccountType{
 		Code:  uint8(5),
 		Name:  "Online wallet",
-		Short: "OW",
+		Short: "AOW",
 	}
 
-	// US is international account (US)
-	US AccountType = AccountType{
+	// AUS is international account (US)
+	AUS AccountType = AccountType{
 		Code:  uint8(6),
 		Name:  "US Account",
-		Short: "US",
+		Short: "AUS",
 	}
 )

@@ -8,18 +8,22 @@ import (
 )
 
 // Converter will convert transaction to csv format
-func Converter(t *models.Transaction) string {
+func Converter(t *models.Transaction, account *models.Account, accountTo *models.Account) string {
 	output := []string{
 		utils.UIntToString(t.Index),
 		t.Datetime,
 		utils.UIntToString(uint32(t.Type.Code)),
 		t.Type.Name,
 		t.Type.Short,
-		t.Account,
+		account.Name,
+		account.Type.Name,
+		account.Type.Short,
 		utils.FloatToString(t.Amount),
 		t.AmountCurrency.Name,
 		t.AmountCurrency.Short,
-		t.AccountTo,
+		accountTo.Name,
+		accountTo.Type.Name,
+		accountTo.Type.Short,
 		utils.FloatToString(t.AmountTo),
 		t.AmountToCurrency.Name,
 		t.AmountToCurrency.Short,

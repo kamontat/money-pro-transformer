@@ -4,6 +4,8 @@ go 1.15
 
 replace moneypro.kamontat.net/models-common => ../models
 
+replace moneypro.kamontat.net/models-profile => ../profile
+
 replace moneypro.kamontat.net/models-transaction => ../transaction
 
 replace moneypro.kamontat.net/models-currency => ../currency

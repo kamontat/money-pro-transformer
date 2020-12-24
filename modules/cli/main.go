@@ -71,9 +71,11 @@ func main() {
 	}
 
 	stepname = "Load csv file and transform"
-	application, err := datasource.Loader(output, path.Join(*rootdir, *inputDir, *inputFile))
+	profile, err := datasource.Loader(output, path.Join(*rootdir, *inputDir, *inputFile))
 	error.When(err).Exit(2)
 	timing.LogSnapshot(stepname, output, logcode+13).Save(stepname)
+	profile.Info(output, logcode)
+	profile.Debug(output, logcode)
 
 	stepname = "Create output file"
 	creator, err := writer.NewFileCreator(path.Join(*rootdir, *outputDir, *outputFile))
@@ -81,7 +83,7 @@ func main() {
 	timing.LogSnapshot(stepname, output, logcode+14).Save(stepname)
 
 	stepname = "Write data to output file"
-	writer := csv.NewWriter(creator, application)
+	writer := csv.NewWriter(creator, profile)
 	writer.Info(output)
 
 	size, err := writer.Start(output)

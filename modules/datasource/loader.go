@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	models "moneypro.kamontat.net/models-common"
+	pf "moneypro.kamontat.net/models-profile"
 	transaction "moneypro.kamontat.net/models-transaction"
 	e "moneypro.kamontat.net/utils-error"
 	logger "moneypro.kamontat.net/utils-logger"
@@ -16,7 +16,7 @@ import (
 var logcode = 2000
 
 // Loader will load csv and convert to transaction struct
-func Loader(output *logger.Logger, filename string) (*models.Application, error) {
+func Loader(output *logger.Logger, filename string) (*pf.Profile, error) {
 	timing := measure.NewTiming()
 
 	stepname := "Load csv file"
@@ -45,7 +45,8 @@ func Loader(output *logger.Logger, filename string) (*models.Application, error)
 
 	stepname = "Convert content to golang object"
 	var nameMapper []string
-	application := models.NewApplication()
+	profile := pf.NewProfile()
+	// application := models.NewApplication()
 
 	output.Debug(logcode, "Loading csv size: %d line", len(csvLines)-1)
 	for index, line := range csvLines {
@@ -66,12 +67,12 @@ func Loader(output *logger.Logger, filename string) (*models.Application, error)
 
 			transaction, err := transaction.Builder(mapper)
 			e.When(err).Print(output, logcode).OnCompleted(func() {
-				application.AddTransaction(transaction)
+				profile.AddTransaction(transaction)
 			})
 		}
 	}
 	timing.LogSnapshot(stepname, output, logcode+13).Save(stepname)
 	timing.LogAll("Loading csv file", output, logcode+100)
 
-	return application, nil
+	return profile, nil
 }

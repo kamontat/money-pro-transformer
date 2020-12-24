@@ -1,7 +1,7 @@
 package writer
 
 import (
-	models "moneypro.kamontat.net/models-common"
+	profile "moneypro.kamontat.net/models-profile"
 	logger "moneypro.kamontat.net/utils-logger"
 )
 
@@ -9,9 +9,9 @@ var logcode = 3000
 
 // Writer is interface for writer data to file
 type Writer struct {
-	Application *models.Application
-	WriterType  Type
-	Creator     *FileCreator
+	Profile    *profile.Profile
+	WriterType Type
+	Creator    *FileCreator
 }
 
 // Info will print useful information

@@ -6,6 +6,8 @@ replace moneypro.kamontat.net/writer => ../writer
 
 replace moneypro.kamontat.net/models-common => ../models
 
+replace moneypro.kamontat.net/models-profile => ../profile
+
 replace moneypro.kamontat.net/utils-common => ../utils
 
 replace moneypro.kamontat.net/utils-logger => ../logger
