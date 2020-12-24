@@ -12,6 +12,11 @@ func (l *Logger) SetLevel(level loggerLevel) {
 	l.level = level
 }
 
+// IsDebug will return true if on debug mode
+func (l *Logger) IsDebug() bool {
+	return l.CheckLevel(DEBUG)
+}
+
 // CheckLevel is input level should be log or not
 func (l *Logger) CheckLevel(level loggerLevel) bool {
 	if level.Code <= l.level.Code {
@@ -39,6 +44,11 @@ func (l *Logger) private(level loggerLevel, key int, format string, params ...in
 // Debug is logging as debug message
 func (l *Logger) Debug(key int, format string, params ...interface{}) {
 	l.private(DEBUG, key, format, params...)
+}
+
+// Time is logging as debug message with time key
+func (l *Logger) Time(key int, name string, duration string) {
+	l.private(TIME, key, "%s: %s", name, duration)
 }
 
 // Info is logging as info message

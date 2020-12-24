@@ -14,7 +14,8 @@ type Writer struct {
 	Creator     *FileCreator
 }
 
-// Debug will print debug info from account
-func (w *Writer) Debug(output *logger.Logger) {
-	output.Debug(logcode, w.Application.String())
+// Info will print useful information
+func (w *Writer) Info(output *logger.Logger) {
+	output.Info(logcode, "Write to   : %s", w.Creator.FilePath)
+	output.Info(logcode, "Result type: %s", w.WriterType)
 }

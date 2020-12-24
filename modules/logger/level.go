@@ -20,10 +20,18 @@ func (l loggerLevel) String() string {
 var (
 	// DEBUG is lowest level in logging
 	DEBUG loggerLevel = loggerLevel{
-		Code:  uint8(4),
+		Code:  uint8(5),
 		Name:  "Debug",
 		Short: "DBG",
 		Color: color.New(color.Italic),
+	}
+
+	// TIME is logging for timing measure only
+	TIME loggerLevel = loggerLevel{
+		Code:  uint8(4),
+		Name:  "Time",
+		Short: "TIM",
+		Color: color.New(color.FgMagenta),
 	}
 
 	// INFO is common message
@@ -31,7 +39,7 @@ var (
 		Code:  uint8(3),
 		Name:  "Info",
 		Short: "INF",
-		Color: color.New(),
+		Color: color.New(color.FgHiGreen),
 	}
 
 	// WARN is a calm error message

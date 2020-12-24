@@ -10,19 +10,25 @@ import (
 	csv "moneypro.kamontat.net/utils-csv"
 	error "moneypro.kamontat.net/utils-error"
 	logger "moneypro.kamontat.net/utils-logger"
+	measure "moneypro.kamontat.net/utils-measure"
 	writer "moneypro.kamontat.net/writer"
 )
 
 var logcode = 1000
 
 func main() {
+	timing := measure.NewTiming()
+
+	stepname := "Load current data"
 	exe, err := os.Executable()
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(2)
 	}
 	curdir := path.Dir(exe)
+	timing.Save(stepname)
 
+	stepname = "Parse script parameters"
 	rootdir := flag.String("rootDir", curdir, "base directory for find data")
 	inputDir := flag.String("inputDir", "", "directory of input data")
 	inputFile := flag.String("inputFile", "test.csv", "input file name (only)")
@@ -34,6 +40,7 @@ func main() {
 	onSilentMode := flag.Bool("silent", false, "set log level to silent mode")
 
 	flag.Parse()
+	timing.Save(stepname)
 
 	if *outputDir == "" {
 		outputDir = inputDir
@@ -43,8 +50,8 @@ func main() {
 		outputFile = &newString
 	}
 
+	stepname = "Setup logging"
 	output := logger.Get()
-
 	// Set to debug level
 	if *onDebugMode {
 		output.SetLevel(logger.DEBUG)
@@ -53,35 +60,35 @@ func main() {
 	} else if *onSilentMode {
 		output.SetLevel(logger.SILENT)
 	}
+	timing.Save(stepname)
 
-	// Loading file and convert to Account struct
+	i := 10
+	for key, duration := range timing.Release() {
+		if key != "All" {
+			output.Time(logcode+i, key, duration.String())
+			i++
+		}
+	}
+
+	stepname = "Load csv file and transform"
 	application, err := datasource.Loader(output, path.Join(*rootdir, *inputDir, *inputFile))
-	error.When(err).Print(output, logcode).Panic().Exit(2)
+	error.When(err).Exit(2)
+	timing.LogSnapshot(stepname, output, logcode+13).Save(stepname)
 
+	stepname = "Create output file"
 	creator, err := writer.NewFileCreator(path.Join(*rootdir, *outputDir, *outputFile))
-	error.When(err).Print(output, logcode).Panic().Exit(2)
+	error.When(err).Exit(3)
+	timing.LogSnapshot(stepname, output, logcode+14).Save(stepname)
 
+	stepname = "Write data to output file"
 	writer := csv.NewWriter(creator, application)
+	writer.Info(output)
+
 	size, err := writer.Start(output)
-	error.When(err).Panic().Exit(3)
+	error.When(err).Exit(4)
+	timing.LogSnapshot(stepname, output, logcode+15).Save(stepname)
 
 	output.Info(logcode, "Writing total %d bytes", size)
 
-	// // Create output file via File Creator
-	// creator, err := writer.NewFileCreator(path.Join(*rootdir, *outputDir, *outputFile))
-	// if err != nil {
-	// 	log.Fatal(err)
-	// 	os.Exit(2)
-	// }
-
-	// // Create output format and write data
-	// writer := writer.NewCsvWriter(creator, accounts)
-	// byteSize, err := writer.Writing()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// 	os.Exit(2)
-	// }
-
-	// // Print the result
-	// fmt.Printf("Write data totally %d bytes\n", byteSize)
+	timing.LogAll("All", output, logcode+100)
 }
