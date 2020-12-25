@@ -7,12 +7,12 @@ import (
 	"os"
 	"path"
 
+	connection "moneypro.kamontat.net/connection-common"
 	datasource "moneypro.kamontat.net/datasource"
 	csv "moneypro.kamontat.net/utils-csv"
 	error "moneypro.kamontat.net/utils-error"
 	logger "moneypro.kamontat.net/utils-logger"
 	measure "moneypro.kamontat.net/utils-measure"
-	writer "moneypro.kamontat.net/writer"
 )
 
 // VERSION is commandline version
@@ -28,7 +28,7 @@ func version(output *logger.Logger) {
 	output.Info(0, _version("Core", VERSION))
 	if output.IsDebug() {
 		output.Info(0, _version("Datasource", datasource.VERSION))
-		output.Info(0, _version("Writer", writer.VERSION))
+		output.Info(0, _version("Connection", connection.VERSION))
 		output.Info(0, _version("CSV Writer", csv.VERSION))
 
 		output.Info(0, _version("Logger", logger.VERSION))
@@ -40,7 +40,7 @@ func version(output *logger.Logger) {
 func main() {
 	timing := measure.NewTiming()
 
-	stepname := "Load current data"
+	stepname := "Step: Load application data"
 	exe, err := os.Executable()
 	if err != nil {
 		log.Fatal(err)
@@ -49,10 +49,10 @@ func main() {
 	curdir := path.Dir(exe)
 	timing.Save(stepname)
 
-	stepname = "Parse script parameters"
+	stepname = "Step: Parse script parameters"
 	rootdir := flag.String("rootDir", curdir, "base directory for find data")
 	inputDir := flag.String("inputDir", "", "directory of input data")
-	inputFile := flag.String("inputFile", "test.csv", "input file name (only)")
+	inputFile := flag.String("inputFile", "moneypro.csv", "input file name (only)")
 	outputDir := flag.String("outputDir", "", "directory of output data")
 	outputFile := flag.String("outputFile", "", "output file name (only)")
 
@@ -71,7 +71,7 @@ func main() {
 		outputFile = &newString
 	}
 
-	stepname = "Setup logging"
+	stepname = "Step: Setup logging"
 	output := logger.Get()
 	// Set to debug level
 	if *onDebugMode {
@@ -94,21 +94,45 @@ func main() {
 		}
 	}
 
-	stepname = "Load csv file and transform"
-	profile, err := datasource.Loader(output, path.Join(*rootdir, *inputDir, *inputFile))
+	// // open input connection
+	// inputConnection, err := connection.NewInputFile(path.Join(*rootDir, *inputDir, *inputFile))
+	// error.When(err).Exit(2)
+	// inputConnection.AutoClose()
+
+	// // Transform input to struct
+	// reader := csv.Reader(inputConnection)
+	// profile, err := reader.Transform(output, logcode)
+	// error.When(err).Exit(4)
+	// profile.Info(output, logcode)
+	// profile.Debug(output, logcode)
+
+	// // create output connection
+	// outputConnection, err := connection.NewOutputFile(path.Join(*rootDir, *outputDir, *outputFile))
+	// error.When(err).Exit(4)
+	// outputConnection.AutoClose()
+
+	// // Create csv writer
+	// writer := csv.Writer(outputConnection)
+
+	// // Write data to output
+	// writer.Write(profile)
+
+	stepname = "Step: Load csv file and transform"
+	profile, err := datasource.LoaderV1(output, path.Join(*rootdir, *inputDir, *inputFile))
 	error.When(err).Exit(2)
 	timing.LogSnapshot(stepname, output, logcode+13).Save(stepname)
 	profile.Info(output, logcode)
 	profile.Debug(output, logcode)
 
-	stepname = "Create output file"
-	creator, err := writer.NewFileCreator(path.Join(*rootdir, *outputDir, *outputFile))
+	stepname = "Step: Create output file"
+	outputConnection, err := connection.NewOutputFile(path.Join(*rootdir, *outputDir, *outputFile))
 	error.When(err).Exit(3)
+	outputConnection.Info(output, logcode)
+
 	timing.LogSnapshot(stepname, output, logcode+14).Save(stepname)
 
-	stepname = "Write data to output file"
-	writer := csv.NewWriter(creator, profile)
-	writer.Info(output)
+	stepname = "Step: Write data to output file"
+	writer := csv.NewWriter(outputConnection, profile)
 
 	size, err := writer.Start(output)
 	error.When(err).Exit(4)
@@ -116,5 +140,6 @@ func main() {
 
 	output.Info(logcode, "Writing total %d bytes", size)
 
-	timing.LogAll("All", output, logcode+100)
+	output.Info(logcode, "%s", timing.StartTime)
+	timing.LogAll("Step: Summary total usage", output, logcode+100)
 }
