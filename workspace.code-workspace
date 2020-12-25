@@ -1,0 +1,52 @@
+{
+  "folders": [
+    {
+      "path": "modules/cli"
+    },
+    {
+      "path": "modules/datasource"
+    },
+    {
+      "path": "modules/writer"
+    },
+    {
+      "path": "modules/models"
+    },
+    {
+      "path": "modules/profile"
+    },
+    {
+      "path": "modules/transaction"
+    },
+    {
+      "path": "modules/currency"
+    },
+    {
+      "path": "modules/utils"
+    },
+    {
+      "path": "modules/logger"
+    },
+    {
+      "path": "modules/error"
+    },
+    {
+      "path": "modules/measure"
+    },
+    {
+      "path": "modules/csv"
+    },
+    {
+      "path": "resources"
+    },
+    {
+      "path": "scripts"
+    },
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "go.inferGopath": false
+  }
+}
