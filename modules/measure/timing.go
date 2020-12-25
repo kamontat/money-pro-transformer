@@ -15,10 +15,8 @@ type Timing struct {
 
 // Reset will reset all time in object
 func (t Timing) Reset() {
-	now := time.Now()
-
-	t.StartTime = now
-	t.Snapshot = now
+	t.StartTime = time.Now()
+	t.Snapshot = time.Now()
 }
 
 // Restart will update snapshot time to current
@@ -74,10 +72,9 @@ func (t Timing) Release() map[string]time.Duration {
 
 // NewTiming is create new timing object
 func NewTiming() Timing {
-	start := time.Now()
 	return Timing{
-		StartTime: start,
-		Snapshot:  start,
+		StartTime: time.Now(),
+		Snapshot:  time.Now(),
 		Steps:     make(map[string]time.Duration),
 	}
 }
