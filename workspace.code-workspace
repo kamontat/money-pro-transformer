@@ -7,7 +7,7 @@
       "path": "modules/datasource"
     },
     {
-      "path": "modules/writer"
+      "path": "modules/connection"
     },
     {
       "path": "modules/models"
