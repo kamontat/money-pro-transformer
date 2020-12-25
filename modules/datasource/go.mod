@@ -20,8 +20,6 @@ replace moneypro.kamontat.net/utils-measure => ../measure
 
 replace moneypro.kamontat.net/utils-csv => ../csv
 
-replace moneypro.kamontat.net/writer => ../writer
-
 require (
 	moneypro.kamontat.net/models-common v0.0.0-00010101000000-000000000000
 	moneypro.kamontat.net/models-profile v0.0.0-00010101000000-000000000000

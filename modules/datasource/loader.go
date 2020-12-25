@@ -15,11 +15,11 @@ import (
 
 var logcode = 2000
 
-// Loader will load csv and convert to transaction struct
-func Loader(output *logger.Logger, filename string) (*pf.Profile, error) {
+// LoaderV1 will load csv and convert to transaction struct
+func LoaderV1(output *logger.Logger, filename string) (*pf.Profile, error) {
 	timing := measure.NewTiming()
 
-	stepname := "Load csv file"
+	stepname := "      Open csv file"
 	csvFile, err := os.Open(filename)
 	defer csvFile.Close()
 	if e.When(err).Print(output, logcode).Exist() {
@@ -27,7 +27,7 @@ func Loader(output *logger.Logger, filename string) (*pf.Profile, error) {
 	}
 	timing.LogSnapshot(stepname, output, logcode+10).Save(stepname)
 
-	stepname = "Load csv file information"
+	stepname = "      Get csv status"
 	csvFileInfo, err := csvFile.Stat()
 	if e.When(err).Print(output, logcode).Exist() {
 		return nil, err
@@ -36,14 +36,14 @@ func Loader(output *logger.Logger, filename string) (*pf.Profile, error) {
 	output.Info(logcode, "Reading %s %d bytes", csvFileInfo.Name(), csvFileInfo.Size()) // log information
 	timing.LogSnapshot(stepname, output, logcode+11).Save(stepname)                     // log measurement timing
 
-	stepname = "Read csv content"
+	stepname = "      Read csv content"
 	csvLines, err := csv.NewReader(csvFile).ReadAll()
 	if e.When(err).Print(output, logcode).Exist() {
 		return nil, err
 	}
 	timing.LogSnapshot(stepname, output, logcode+12).Save(stepname)
 
-	stepname = "Convert content to golang object"
+	stepname = "      Convert content to golang object"
 	var nameMapper []string
 	profile := pf.NewProfile()
 	// application := models.NewApplication()
@@ -72,7 +72,6 @@ func Loader(output *logger.Logger, filename string) (*pf.Profile, error) {
 		}
 	}
 	timing.LogSnapshot(stepname, output, logcode+13).Save(stepname)
-	timing.LogAll("Loading csv file", output, logcode+100)
 
 	return profile, nil
 }
