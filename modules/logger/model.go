@@ -48,7 +48,7 @@ func (l *Logger) Debug(key int, format string, params ...interface{}) {
 
 // Time is logging as debug message with time key
 func (l *Logger) Time(key int, name string, duration string) {
-	l.private(TIME, key, "%s: %s", name, duration)
+	l.private(TIME, key, "%-35s: %s", name, duration)
 }
 
 // Info is logging as info message
