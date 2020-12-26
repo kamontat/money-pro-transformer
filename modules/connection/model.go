@@ -2,8 +2,6 @@ package connection
 
 import (
 	"io"
-
-	logger "moneypro.kamontat.net/utils-logger"
 )
 
 // Interface is model interface for connection
@@ -17,5 +15,5 @@ type Interface interface {
 
 	GetReader() io.Reader
 
-	Info(output *logger.Logger, code int)
+	Info() string
 }

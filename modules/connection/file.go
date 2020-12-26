@@ -1,10 +1,9 @@
 package connection
 
 import (
+	"fmt"
 	"io"
 	"os"
-
-	logger "moneypro.kamontat.net/utils-logger"
 )
 
 // File is inherite from connection.Interface
@@ -57,9 +56,9 @@ func (f *File) GetReader() io.Reader {
 	return f.IO
 }
 
-// Info will print useful information
-func (f *File) Info(output *logger.Logger, code int) {
-	output.Info(code, "Connection path: %s (type=%s)", f.Pathname, f.Type())
+// Info will return useful information
+func (f *File) Info() string {
+	return fmt.Sprintf("Connection path: %s (type=%s)", f.Pathname, f.Type())
 }
 
 // NewInputFile will open new file as readonly
