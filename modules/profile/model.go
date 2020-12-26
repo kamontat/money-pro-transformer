@@ -92,10 +92,10 @@ func (p *Profile) Info(output *logger.Logger, code int) {
 func (p *Profile) Debug(output *logger.Logger, code int) {
 	output.Debug(code, "A profile statistic: ")
 	for _, account := range p.account {
-		output.Debug(code, "  Account %s (type=%s, size=%d)", account.Name, account.Type.Name, len(account.Transactions))
-		for index, transaction := range account.Transactions {
-			output.Debug(code, "   %3d) %s", index+1, transaction.String())
-		}
+		output.Debug(code, "%-25s Type = %-14s, Size = %04d", account.Name, account.Type.Name, len(account.Transactions))
+		// for index, transaction := range account.Transactions {
+		// 	output.Debug(code, "   %3d) %s", index+1, transaction.String())
+		// }
 	}
 }
 
