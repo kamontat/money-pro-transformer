@@ -111,7 +111,7 @@ func main() {
 	profile := pf.NewProfile()
 	for _, data := range dataMapper {
 		t, err := transaction.Builder(data)
-		error.When(err).Exit(4)
+		error.When(err).Print(output, logcode).Exit(4)
 		profile.AddTransaction(t)
 	}
 	profile.Info(output, logcode)
@@ -120,7 +120,7 @@ func main() {
 
 	stepname = "Step: Create output file"
 	outputConnection, err := connection.NewOutputFile(path.Join(*rootdir, *outputDir, *outputFile))
-	error.When(err).Exit(3)
+	error.When(err).Print(output, logcode).Exit(3)
 	output.Info(logcode, outputConnection.Info())
 	timing.LogSnapshot(stepname, output, logcode+15).Save(stepname)
 
@@ -128,7 +128,7 @@ func main() {
 	writer := csv.NewWriter(outputConnection, profile)
 
 	size, err := writer.Start(output)
-	error.When(err).Exit(4)
+	error.When(err).Print(output, logcode).Exit(4)
 	timing.LogSnapshot(stepname, output, logcode+15).Save(stepname)
 
 	output.Info(logcode, "Writing total %d bytes", size)
