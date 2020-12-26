@@ -6,7 +6,6 @@ import (
 	connection "moneypro.kamontat.net/connection-common"
 	models "moneypro.kamontat.net/models-common"
 	profile "moneypro.kamontat.net/models-profile"
-	e "moneypro.kamontat.net/utils-error"
 	logger "moneypro.kamontat.net/utils-logger"
 	measure "moneypro.kamontat.net/utils-measure"
 )
@@ -64,7 +63,7 @@ func (w *Writer) Start(output *logger.Logger) (int, error) {
 
 	stepname := "      Writing header"
 	size, err := w.Connection.Write(w.Header(), true)
-	if e.When(err).Print(output, 1).Exist() {
+	if err != nil {
 		return byteSize, err
 	}
 	byteSize += size
@@ -74,7 +73,7 @@ func (w *Writer) Start(output *logger.Logger) (int, error) {
 	w.Profile.ForEachTransaction(func(index int, transaction *models.Transaction) {
 		csvFormat := Converter(transaction, w.Profile.GetAccount(transaction.Account), w.Profile.GetAccount(transaction.AccountTo))
 		size, err := w.Connection.Write(csvFormat, true)
-		if e.When(err).Print(output, 1).Empty() {
+		if err != nil {
 			byteSize += size
 		}
 	})
