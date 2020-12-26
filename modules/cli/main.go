@@ -99,6 +99,8 @@ func main() {
 		}
 	}
 
+	timing.Start()
+
 	stepname = "Step: Load csv content"
 	inputConnection, err := connection.NewInputFile(path.Join(*rootdir, *inputDir, *inputFile))
 	error.When(err).Print(output, logcode).Exit(2)
@@ -126,7 +128,6 @@ func main() {
 
 	stepname = "Step: Write data to output file"
 	writer := csv.NewWriter(outputConnection, profile)
-
 	size, err := writer.Start(output)
 	error.When(err).Print(output, logcode).Exit(4)
 	timing.LogSnapshot(stepname, output, logcode+15).Save(stepname)
