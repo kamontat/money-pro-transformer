@@ -4,9 +4,6 @@
       "path": "modules/cli"
     },
     {
-      "path": "modules/datasource"
-    },
-    {
       "path": "modules/connection"
     },
     {
