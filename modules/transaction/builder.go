@@ -5,34 +5,28 @@ import (
 
 	models "moneypro.kamontat.net/models-common"
 	currency "moneypro.kamontat.net/models-currency"
-	e "moneypro.kamontat.net/utils-error"
-	logger "moneypro.kamontat.net/utils-logger"
 )
-
-var logcode = 5000
 
 // Builder will build transaction object
 func Builder(mapper map[string]string) (*models.Transaction, error) {
-	output := logger.Get()
-
 	amount, amountCurrency, err := currency.Builder(models.AMOUNT.Get(mapper))
-	if e.When(err).Print(output, logcode).Exist() {
+	if err != nil {
 		return nil, err
 	}
 
 	amountTo, amountToCurrency, err := currency.Builder(models.AMOUNTTO.Get(mapper))
-	if e.When(err).Print(output, logcode).Exist() {
+	if err != nil {
 		return nil, err
 	}
 
 	balance, balanceCurrency, err := currency.Builder(models.BALANCE.Get(mapper))
-	if e.When(err).Print(output, logcode).Exist() {
+	if err != nil {
 		return nil, err
 	}
 
 	// output.Debug(logcode, "Index number: %s", models.INDEX.Get(mapper))
 	index, err := strconv.ParseUint(models.INDEX.Get(mapper), 10, 32)
-	if e.When(err).Print(output, logcode).Exist() {
+	if err != nil {
 		return nil, err
 	}
 
