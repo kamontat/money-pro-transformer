@@ -18,6 +18,9 @@ import (
 	measure "moneypro.kamontat.net/utils-measure"
 )
 
+// VERSION is commandline version
+const VERSION = "v1.1.1"
+
 var logcode = 1000
 
 func _version(name string, version string) string {
