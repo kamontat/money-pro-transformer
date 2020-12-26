@@ -24,14 +24,14 @@ const VERSION = "v1.0.1"
 var logcode = 1000
 
 func _version(name string, version string) string {
-	return fmt.Sprintf("%-12s version: %s", name, version)
+	return fmt.Sprintf("%-15s version: %s", name, version)
 }
 
 func version(output *logger.Logger) {
 	output.Info(0, _version("Core", VERSION))
 	if output.IsDebug() {
 		output.Info(0, _version("Connection", connection.VERSION))
-		output.Info(0, _version("CSV", csv.VERSION))
+		output.Info(0, _version("Connection CSV", csv.VERSION))
 
 		output.Info(0, _version("Transaction", transaction.VERSION))
 		output.Info(0, _version("Profile", pf.VERSION))
@@ -110,12 +110,8 @@ func main() {
 	timing.LogSnapshot(stepname, output, logcode+13).Save(stepname)
 
 	stepname = "Step: Transform to struct"
-	profile := pf.NewProfile()
-	for _, data := range dataMapper {
-		t, err := transaction.Builder(data)
-		error.When(err).Print(output, logcode).Exit(4)
-		profile.AddTransaction(t)
-	}
+	profile, err := pf.Loader(pf.NewProfile(), dataMapper)
+	error.When(err).Print(output, logcode).Exit(3)
 	profile.Info(output, logcode)
 	profile.Debug(output, logcode)
 	timing.LogSnapshot(stepname, output, logcode+14).Save(stepname)
@@ -130,7 +126,7 @@ func main() {
 	writer := csv.NewWriter(outputConnection, profile)
 	size, err := writer.Start(output)
 	error.When(err).Print(output, logcode).Exit(4)
-	timing.LogSnapshot(stepname, output, logcode+15).Save(stepname)
+	timing.LogSnapshot(stepname, output, logcode+16).Save(stepname)
 
 	output.Info(logcode, "Writing total %d bytes", size)
 
