@@ -1,4 +1,10 @@
-# CSV Utilities
+# CSV Connection
+
+## v0.2.0
+
+- Change module name from `utils-csv` to `connection-csv`
+- Add `NewReader()` for read csv string
+- Remove `CsvKey` constants, move to models module (v1.0.0) instead
 
 ## v0.1.1
 

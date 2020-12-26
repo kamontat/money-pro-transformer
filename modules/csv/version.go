@@ -1,4 +1,4 @@
 package csv
 
 // VERSION is current module version
-const VERSION = "v0.1.1"
+const VERSION = "v0.2.0"
