@@ -4,9 +4,6 @@
       "path": "modules/cli"
     },
     {
-      "path": "modules/connection"
-    },
-    {
       "path": "modules/models"
     },
     {
@@ -29,6 +26,9 @@
     },
     {
       "path": "modules/measure"
+    },
+    {
+      "path": "modules/connection"
     },
     {
       "path": "modules/csv"
